@@ -1,5 +1,7 @@
 import { Project, Skill } from './types';
 
+const asset = (path: string) => `${import.meta.env.BASE_URL}${path}`;
+
 export const projects: Project[] = [
 
   // ── 1. SINTEX ──────────────────────────────────────────────────────────────
@@ -12,33 +14,33 @@ export const projects: Project[] = [
     metricLabel: 'multilingual WhatsApp agent',
     title: 'Sintex — Multilingual WhatsApp AI Assistant for Plumbers',
     summary:
-      'A production LLM-powered WhatsApp chatbot for the Sintex plumber loyalty program, letting plumbers across India check and redeem reward points, scan product QR codes, raise support tickets, find dealers, and get instant answers from official Sintex pipe and tank documentation — all in their own language (English, Hindi, Marathi, or Hinglish).',
+      'Problem: Plumbers struggled to use the loyalty program and get product support across different languages. Solution: A multilingual WhatsApp AI agent for rewards, QR claims, dealer search, support tickets, and trusted product answers.',
     tools: [
       'Python', 'FastAPI', 'LangGraph', 'LangChain',
       'Azure OpenAI (GPT)', 'RAG', 'PostgreSQL', 'SQLAlchemy',
       'Alembic', 'WATI (WhatsApp API)', 'rapidfuzz', 'fpdf2', 'Docker'
     ],
-    coverImage: 'https://i.postimg.cc/PrmdGSp5/what-is-GPT.png',
+    coverImage: asset('project-covers/sintex-multilingual-agent.png'),
 
     businessProblem: [
-      'Sintex runs a loyalty program for plumbers, but participation was low because plumbers had to use a separate app or portal that most of them never opened.',
-      'Plumbers across India speak different languages — English, Hindi, Marathi, Hinglish — and existing digital tools offered no multilingual support.',
-      'Plumbers frequently called support teams to ask about product specs (pipe pressure ratings, tank capacities, etc.), overloading the helpdesk with questions that official documents already answered.',
+      'Plumbers rarely used the separate loyalty app, which reduced participation in the rewards program.',
+      'Many plumbers preferred Hindi, Marathi, or Hinglish, but the existing tools did not support multilingual conversations.',
+      'Support teams spent significant time answering repeated questions about products, reward points, and nearby dealers.',
       'Reward claims required manual processes that were slow, error-prone, and dependent on correct data entry — leading to trust issues with the loyalty program.',
       'There was no single, frictionless channel for plumbers to interact with the loyalty program, find dealers nearby, or raise a support ticket.',
     ],
 
     businessObjective: [
-      'Bring the entire loyalty program experience into WhatsApp — the one app every plumber already uses daily.',
-      'Enable plumbers to interact in their own language without any switching or translation friction.',
-      'Automate product Q&A by retrieving answers directly from official Sintex pipe and tank documentation using RAG, eliminating helpdesk load for product queries.',
+      'Bring rewards, QR claims, dealer search, and support into WhatsApp, an app plumbers already use daily.',
+      'Let users select English, Hindi, Marathi, or Hinglish and change their language at any point in the conversation.',
+      'Answer product questions from verified Sintex documents while keeping reward transactions accurate and rule-based.',
       'Make reward claims 100% reliable by running critical transactions through deterministic rule-based logic — not the AI — so the database is always accurate.',
       'Increase plumber engagement and loyalty program participation through convenience and language accessibility.',
     ],
 
     constraints: [
       'WhatsApp message format is plain text — no rich UI, no forms, no buttons for complex flows — requiring all interaction to be handled through conversational design.',
-      'Language detection had to be automatic and accurate across four languages including Hinglish (a code-mixed informal hybrid), with no user setup required.',
+      'Language selection had to be simple, with the active preference retained until the user chooses a different language.',
       'Reward claim logic had to be 100% deterministic — the AI must never be allowed to write incorrect values into the database, even if a user attempts to manipulate it.',
       'RAG responses had to stay grounded in official Sintex documents — hallucination about product specs (pressure ratings, capacities) would be a serious trust and safety issue.',
       'The system had to handle concurrent WhatsApp sessions from many users with low latency, deployed on a Linux server with Docker.',
@@ -48,7 +50,7 @@ export const projects: Project[] = [
       description: [
         '**WhatsApp Layer (WATI):** Incoming messages are received via WATI webhook and routed to the FastAPI backend. Outgoing responses are sent back through WATI\'s WhatsApp Business API.',
         '**FastAPI Backend:** Handles webhook events, manages user sessions, and routes each message to the LangGraph AI agent.',
-        '**LangGraph Agentic Workflow:** An 8-tool ReAct agent powered by Azure OpenAI. Each tool handles a specific domain: points check, redemption, QR scanning, dealer search, ticket raising, RAG product Q&A, PDF generation, and language detection.',
+        '**LangGraph Agentic Workflow:** An 8-tool ReAct agent powered by Azure OpenAI. Each tool handles a specific domain: points check, redemption, QR scanning, dealer search, ticket raising, RAG product Q&A, PDF generation, and changeable language preferences.',
         '**RAG Layer (Product Q&A Tool):** Official Sintex pipe and tank documents are chunked, embedded, and stored in a vector store. When a user asks a product question, the agent retrieves relevant chunks and synthesizes an accurate answer — never hallucinating specs.',
         '**Rule-Based Reward Logic:** All point claim and redemption transactions bypass the LLM entirely and run through strict validation logic before writing to PostgreSQL. Ensures data integrity regardless of conversation context.',
         '**PostgreSQL + SQLAlchemy + Alembic:** Stores users, conversation history, reward transactions, and claims. Schema versioned with Alembic migrations.',
@@ -59,7 +61,7 @@ export const projects: Project[] = [
 
     methodology: [
       'Designed the full conversational flow for 8 features, mapping each to a dedicated LangGraph tool so the agent routes deterministically to the right function.',
-      'Implemented automatic language detection using a lightweight classifier at the start of each session; all subsequent responses are generated in the detected language.',
+      'Implemented language selection at the start and an in-conversation switch option; each change updates the preference used for later responses.',
       'Built the RAG pipeline: chunked and embedded official Sintex pipe and tank product documentation, stored vectors in a pgvector-backed store, and connected it as the product Q&A tool.',
       'Separated reward claim and redemption logic completely from the AI layer — these run as pure Python functions with database validation, called by the agent only as a trigger.',
       'Integrated WATI webhooks for receiving WhatsApp messages and sending responses, handling media messages for QR code scanning.',
@@ -93,30 +95,30 @@ export const projects: Project[] = [
     shortName: 'ChittiGPT',
     category: 'GenAI · Enterprise Copilot',
     year: '2025',
-    metric: '20+ tools',
+    metric: '30+ tools',
     metricLabel: 'connected HR services',
     title: 'ChittiGPT — Enterprise HR Copilot for Welspun Group',
     summary:
-      'An internal AI assistant deployed for Welspun Group employees, handling everyday HR self-service through chat — leave, attendance corrections, payslips, document downloads, IT/HR tickets, and policy Q&A. Employees can also ask questions about company HR policies and insurance documents, or upload their own PDF/Excel file and query it directly in the conversation.',
+      'Problem: Employees had to navigate multiple systems for routine HR tasks and information. Solution: One secure AI copilot connecting 30+ services for leave, attendance, payslips, documents, tickets, and policy questions.',
     tools: [
       'Python', 'FastAPI', 'LangGraph', 'WebSockets',
       'Azure OpenAI (GPT-4.1-mini)', 'RAG', 'PostgreSQL',
       'SQLAlchemy', 'Alembic', 'JWT', 'Prometheus', 'Docker'
     ],
-    coverImage: 'https://i.postimg.cc/HLSWQZG8/9dcf9e0f-16ed-4495-a8f4-98f4c9cba131.jpg',
+    coverImage: asset('project-covers/chittigpt-enterprise-v2.png'),
 
     businessProblem: [
-      'Welspun Group employees were spending significant time navigating multiple HR portals and systems to complete routine self-service tasks — leave applications, payslip downloads, attendance corrections, Form 16 retrieval.',
-      'HR and IT support teams were overloaded with Level-1 queries that employees could answer themselves if information were easily accessible.',
-      'Searching for HR policy details, insurance coverage, or internal procedures required navigating long PDF documents — a slow and frustrating experience for employees.',
+      'Employees had to switch between multiple portals to manage leave, attendance, payslips, documents, and support requests.',
+      'HR and IT teams received many repetitive questions that employees could resolve through self-service.',
+      'Important policy and insurance information was buried inside long documents and difficult to search.',
       'There was no unified interface connecting all these services; employees had to remember which system to use for which task.',
       'The organization needed a scalable, secure, chat-based assistant that could grow with the number of connected tools and services.',
     ],
 
     businessObjective: [
-      'Build a single chat interface where employees can complete any routine HR or self-service task without leaving the conversation.',
-      'Connect 20+ internal company services as tools so the AI agent can execute real actions — not just answer questions.',
-      'Enable employees to ask natural language questions against official HR, policy, and insurance documents using a RAG layer grounded in Welspun\'s own documentation.',
+      'Provide one conversational interface where employees can complete routine HR tasks without changing systems.',
+      'Connect more than 30 internal services so the copilot can perform actions, not only answer questions.',
+      'Deliver secure, grounded answers from official HR, policy, insurance, and employee-uploaded documents.',
       'Allow employees to upload their own PDFs or Excel files and query them directly in chat for document-level Q&A.',
       'Deliver real-time, streaming responses with full conversation memory so every interaction feels natural and context-aware.',
       'Deploy securely with JWT + OTP authentication, live monitoring, and versioned database migrations.',
@@ -124,7 +126,7 @@ export const projects: Project[] = [
 
     constraints: [
       'All tool calls had to be accurate and safe — the agent connecting to real HR systems means errors have real consequences (wrong leave records, incorrect payslip data).',
-      'Response latency had to feel conversational despite the agent reasoning over 20+ tools; streaming over WebSockets was necessary to avoid blank-screen waits.',
+      'Response latency had to feel conversational despite the agent reasoning over 30+ tools; streaming over WebSockets was necessary to avoid blank-screen waits.',
       'Document Q&A (RAG) had to stay grounded in official Welspun documents — hallucinated policy answers could create compliance or HR issues.',
       'The system had to be secure: JWT + OTP email login for authentication, with no unauthorized access to employee data.',
       'The PostgreSQL schema evolved significantly during development (15+ migrations), requiring disciplined versioning with Alembic.',
@@ -134,7 +136,7 @@ export const projects: Project[] = [
       description: [
         '**FastAPI + WebSocket Backend:** Handles authentication, manages long-lived WebSocket connections for real-time streaming, and routes messages to the LangGraph agent.',
         '**LangGraph ReAct Agent (Azure OpenAI GPT-4.1-mini):** The core intelligence layer. At each turn, the agent reasons over the available tools, decides which to call, executes it, and synthesizes a human-readable response streamed token-by-token.',
-        '**20+ Connected Tools:** Each company service (leave management, attendance, payslip, Form 16, mediclaim e-card, IT tickets, HR tickets, referrals, etc.) is wrapped as a LangGraph tool. The agent selects and calls the right tool based on user intent.',
+        '**30+ Connected Tools:** Each company service (leave management, attendance, payslip, Form 16, mediclaim e-card, IT tickets, HR tickets, referrals, etc.) is wrapped as a LangGraph tool. The agent selects and calls the right tool based on user intent.',
         '**RAG Layer (Policy & Document Q&A):** Official Welspun HR, policy, and insurance documents are embedded and stored in pgvector. When a user asks a policy question, the RAG tool retrieves the most relevant chunks and answers from the source — not from model memory.',
         '**User Document Q&A:** Employees can upload their own PDFs or Excel files mid-conversation. The system chunks and embeds the uploaded file on-the-fly and makes it queryable within that session.',
         '**Conversation Memory:** Full conversation history is maintained per user session, so the agent can refer back to earlier messages and maintain context across multi-turn interactions.',
@@ -147,7 +149,7 @@ export const projects: Project[] = [
 
     methodology: [
       'Designed the LangGraph agent with a ReAct loop — the agent reasons step-by-step before calling a tool, improving accuracy on complex multi-step HR tasks.',
-      'Wrapped each of 20+ internal company APIs as typed LangGraph tools with input validation, error handling, and retry logic.',
+      'Wrapped each of 30+ internal company APIs as typed LangGraph tools with input validation, error handling, and retry logic.',
       'Built the RAG pipeline over official Welspun HR, policy, and insurance documents — chunked, embedded (Azure OpenAI embeddings), and stored in pgvector for semantic retrieval.',
       'Implemented on-the-fly document Q&A: when a user uploads a file, it\'s parsed, chunked, embedded, and stored in a temporary session-scoped vector store.',
       'Built real-time streaming using FastAPI WebSockets — tokens stream from the LLM to the client as they are generated, eliminating perceived latency.',
@@ -183,35 +185,35 @@ export const projects: Project[] = [
     category: 'Data Engineering · ETL',
     year: '2025',
     metric: '11 KPIs',
-    metricLabel: 'from 6 PG DBs + MongoDB',
+    metricLabel: 'from 5 PostgreSQL + 3 MongoDB databases',
     title: 'WelHire Analytics — Two-Layer KPI ETL Pipeline',
     summary:
-      'A daily batch analytics ETL pipeline with a two-layer architecture: Layer 1 consolidates recruitment data from 6 PostgreSQL databases and MongoDB into a unified analytics warehouse; Layer 2 computes 11 business KPIs for recruiter, tenant, and candidate reporting. Orchestrated by Apache Airflow with automated SMTP email run-reports.',
+      'Problem: Recruitment data was fragmented across 5 PostgreSQL and 3 MongoDB databases, making reporting slow and manual. Solution: An automated daily ETL pipeline that creates one analytics source and calculates 11 business KPIs.',
     tools: [
       'Python', 'Pandas', 'NumPy', 'Apache Airflow (DockerOperator)',
       'PostgreSQL (psycopg3)', 'MongoDB (PyMongo)', 'MySQL (PyMySQL)',
       'SQLAlchemy', 'Docker', 'Cron', 'SMTP', 'Paramiko / SSH Tunnel'
     ],
-    coverImage: 'https://i.postimg.cc/mk3S20Ms/maxresdefault.jpg',
+    coverImage: asset('project-covers/welhire-etl-v2.png'),
 
     businessProblem: [
-      'WelHire (Welspun\'s recruitment platform) ran on multiple separate databases — each service (jobs, CVs, interviews, subscriptions, tenants) had its own PostgreSQL database, with candidate activity data in MongoDB.',
-      'Recruitment and leadership teams had no consolidated view of hiring performance across tenants and recruiters — KPIs had to be pulled manually from multiple systems.',
-      'There was no automated daily reporting, so decision-making on funnel health, recruiter productivity, and platform usage was slow and reactive.',
+      'Recruitment data was distributed across five PostgreSQL and three MongoDB databases owned by different services.',
+      'Recruitment teams lacked a single, reliable view of recruiter activity, candidates, interviews, and tenant performance.',
+      'Preparing KPI reports manually took time and delayed decisions about hiring performance and funnel health.',
       'Adding a new data source to the pipeline required touching multiple parts of the codebase — there was no clean separation between source-specific logic and the transformation layer.',
       'DB connections were unmanaged — each job opened its own connections, causing resource exhaustion on busy days.',
     ],
 
     businessObjective: [
-      'Build an automated daily pipeline that consolidates all WelHire data into a single analytics warehouse — one source of truth for all reporting.',
-      'Compute 11 standardized business KPIs covering recruiter metrics, interview funnel stages, attempt/completion rates, candidate ratings, and tenant-level breakdowns.',
-      'Make the pipeline modular: onboarding a new source database should require minimal code changes.',
+      'Consolidate all recruitment data into one analytics warehouse that serves as the reporting source of truth.',
+      'Automatically calculate 11 standardized business KPIs and deliver daily pipeline status reports.',
+      'Keep the pipeline modular, reliable, and easy to extend when a new source or KPI is introduced.',
       'Automate daily reporting with SMTP email summaries so stakeholders receive pipeline status and KPI snapshots without checking dashboards.',
       'Optimize resource usage with connection pooling and column-level data loading.',
     ],
 
     constraints: [
-      'Six separate PostgreSQL databases plus MongoDB had to be read without impacting production performance — connections had to be managed carefully.',
+      'Five PostgreSQL databases plus three MongoDB databases had to be read without impacting production performance — connections had to be managed carefully.',
       'Some databases were only accessible via SSH tunnel in local development; the pipeline had to support both VNet (production) and SSH tunnel (local) connectivity without code branching.',
       'The Airflow DockerOperator setup required credentials to be mounted at runtime (not baked into the image) for security compliance.',
       'One failing source job must not kill the entire pipeline — each Layer 1 job needed independent error handling.',
@@ -220,7 +222,7 @@ export const projects: Project[] = [
 
     projectArchitecture: {
       description: [
-        '**Layer 1 — Extract, Transform, Load:** Reads from 6 PostgreSQL databases (jobs, CVs, interviews, subscriptions, adapter, tenant_user) and MongoDB (candidates, JDs, user activity). Each source is a modular job registered in a job registry — adding a new source takes two lines. Performs validated joins and aggregations, then loads into the analytics warehouse.',
+        '**Layer 1 — Extract, Transform, Load:** Reads from 5 PostgreSQL databases and 3 MongoDB databases covering jobs, CVs, interviews, subscriptions, tenants, candidates, JDs, and user activity. Each source is a modular job registered in a job registry. Performs validated joins and aggregations, then loads into the analytics warehouse.',
         '**Layer 2 — KPI Engine:** An independent, registry-driven layer that reads from the analytics warehouse and computes 11 business KPIs: daily recruiter metrics, jobs master, role-based applicants, user-wise daily activity, JD creation, interview daily, candidate ratings, interview stages, attempted/completed counts, and tenant-level breakdowns. Each KPI is an independent module with its own replace/append load mode.',
         '**Main Executor:** Chains Layer 1 → Layer 2 in sequence. Handles retry logic (configurable MAX_RETRIES), structured file + console logging, and sends automated SMTP email reports on completion or failure.',
         '**Connection Management:** Centralized singleton DB connections with SQLAlchemy connection pooling (~70% fewer connections vs. per-job approach). Column-level data loading avoids fetching unnecessary columns into memory.',
@@ -269,26 +271,26 @@ export const projects: Project[] = [
     metricLabel: 'refresh cadence',
     title: 'Candidate Live-Status Tracker — Real-Time Interview Funnel ETL',
     summary:
-      'A near real-time ETL pipeline running every 60 seconds that fuses live state from three read-only source systems (PostgreSQL + two MongoDB collections) into a single MySQL analytics table showing exactly where every candidate sits across 14 interview funnel stages. Includes a live Streamlit + Plotly dashboard for funnel monitoring, stuck-candidate detection, and ETL health tracking.',
+      'Problem: Recruiters could not see where candidates were during live interviews. Solution: A read-only pipeline refreshing every 60 seconds that tracks 14 funnel stages, flags stuck candidates, and monitors ETL health.',
     tools: [
       'Python', 'Apache Airflow', 'PostgreSQL', 'MongoDB (PyMongo)',
       'MySQL (mysql-connector-python)', 'SQLAlchemy',
       'Streamlit', 'Plotly', 'Docker / Docker Compose', 'Pytest', 'Cron'
     ],
-    coverImage: 'https://i.postimg.cc/5NFrs0k1/Screenshot-2025-04-01-121642.png',
+    coverImage: asset('project-covers/live-status-v2.png'),
 
     businessProblem: [
-      'During live interviews on WelHire, recruiters and operations teams had no real-time visibility into where individual candidates were in the interview process.',
-      'Candidates could get stuck at any stage (device check failed, link not opened, interview abandoned mid-way) with no automated detection — support teams found out only when candidates called.',
-      'Interview state was spread across three separate systems (scheduling DB, activity event logs, interview session DB) with no single consolidated view.',
+      'Recruiters and operations teams could not see a candidate’s current progress during a live interview.',
+      'Failed checks, unopened links, and abandoned interviews were often discovered only after a candidate contacted support.',
+      'The required interview status was spread across three systems with different event structures and no unified view.',
       'The platform supported two different interview engines (Classic 2.0 and Agentic 3.0), each with different event schemas — there was no unified stage model across both.',
       'Manual status checks required querying multiple databases and mentally joining the results — too slow for live operational support.',
     ],
 
     businessObjective: [
-      'Build a pipeline that runs every 60 seconds and writes the current funnel stage of every active candidate to a single analytics table.',
-      'Model the full interview journey as 14 ordered stages — from email sent through device checks, in-progress interview, completion, and post-processing — across both Classic and Agentic engines.',
-      'Provide a live Streamlit dashboard showing the funnel distribution, stuck candidates, and ETL health metrics.',
+      'Combine the three read-only sources and refresh every active candidate’s current status every 60 seconds.',
+      'Represent both interview engines through one consistent model of 14 ordered funnel stages.',
+      'Provide a live dashboard for funnel distribution, stuck-candidate detection, and pipeline health monitoring.',
       'Enforce strict read-only access to all three source systems — the pipeline must never write to production databases.',
       'Make the schema versioned and auto-migrating so new stages or columns can be added without manual DB intervention.',
     ],
@@ -356,21 +358,21 @@ export const projects: Project[] = [
     metricLabel: 'auto-ingested & deduped',
     title: 'Industrial Rejection Reports Automation — Welspun',
     summary:
-      'A Streamlit-based application for Welspun\'s quality team that automates ingestion of daily pipe rejection data from Excel sheets into MySQL, with multi-sheet parsing, record-level deduplication, and real-time upload feedback — eliminating the manual entry process and preventing data inconsistencies.',
+      'Problem: Quality teams manually entered rejection data from three Excel sheets, causing delays and duplicate records. Solution: A simple upload tool that validates, deduplicates, and loads clean data into MySQL with immediate results.',
     tools: ['Python', 'Streamlit', 'Pandas', 'MySQL', 'SQLAlchemy', 'OpenPyXL', 'Excel'],
-    coverImage: 'https://i.postimg.cc/YSVyXwxW/Gemini-Generated-Image-r5g3b1r5g3b1r5g3.png',
+    coverImage: asset('project-covers/rejection-reports-v2.png'),
 
     businessProblem: [
-      'Welspun\'s quality team recorded daily pipe rejection data manually — a slow, error-prone process that frequently produced duplicate entries and inconsistent records.',
-      'Rejection data came from Excel files with three separate sheets (ProdRej, DIP1, DIP2), each with different column structures, requiring manual reformatting before entry.',
-      'Duplicate records were a persistent issue — the same rejection event would sometimes be entered multiple times, skewing quality metrics.',
+      'Quality teams manually entered daily pipe-rejection data, making the process slow and vulnerable to mistakes.',
+      'Each Excel file contained three sheets with different structures that required separate parsing and validation.',
+      'Repeated uploads could create duplicate records and reduce confidence in the resulting quality reports.',
       'Non-technical quality team members needed a simple, self-service tool — accessing a database directly was not an option.',
     ],
 
     businessObjective: [
-      'Build a simple file-upload interface that automates the full ingestion pipeline: upload Excel → parse multiple sheets → validate → deduplicate → insert into MySQL.',
-      'Eliminate duplicate records with record-level deduplication logic before any database write.',
-      'Give users instant feedback on upload results — how many records were inserted, how many were duplicates, and any errors.',
+      'Give non-technical users a simple interface for uploading and processing the complete Excel report.',
+      'Validate each sheet and prevent duplicate records before writing any data into MySQL.',
+      'Immediately show how many records were inserted, skipped as duplicates, or rejected because of errors.',
     ],
 
     constraints: [

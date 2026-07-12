@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import {
   Linkedin, Mail, ArrowUpRight, Menu, X, Github,
   Phone, MapPin, FileText, Copy, Check, Sparkles, ArrowRight, Sun, Moon,
+  BrainCircuit, Database, Code2, Server, CloudCog, BarChart3,
 } from 'lucide-react';
 import { Modal } from './components/Modal';
 import { projects, skills } from './data';
@@ -10,14 +11,15 @@ import { Toaster } from 'react-hot-toast';
 import toast from 'react-hot-toast';
 
 const NAV = ['about', 'skills', 'work', 'education', 'contact'];
-const RESUME_URL =
-  'https://drive.google.com/file/d/1EcmEbUoDndQ4t4k1C6LT9gOT4YpEU_ib/view?usp=drive_link';
+const RESUME_URL = `${import.meta.env.BASE_URL}resume/Tagoor_Jayamangala_Resume.pdf`;
 
 const SOCIALS = [
   { icon: Linkedin, href: 'https://www.linkedin.com/in/tagoor-jayamangala-b19a30283/', label: 'LinkedIn' },
   { icon: Github, href: 'https://github.com/TagoorJ', label: 'GitHub' },
   { icon: Mail, href: 'mailto:jayamangalatagore@gmail.com', label: 'Email' },
 ];
+
+const SKILL_ICONS = [BrainCircuit, Database, Code2, Server, CloudCog, BarChart3];
 
 function useReveal() {
   useEffect(() => {
@@ -114,8 +116,8 @@ function App() {
 
       {/* ───────── NAV ───────── */}
       <header className="fixed top-0 inset-x-0 z-40">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-4">
-          <nav className="glass rounded-2xl h-16 flex items-center justify-between px-4 sm:px-5">
+        <div className="max-w-6xl mx-auto px-3 sm:px-6 pt-3 sm:pt-4">
+          <nav className="glass rounded-2xl h-14 sm:h-16 flex items-center justify-between px-3 sm:px-5">
             <button
               onClick={() => scrollTo('about')}
               className="flex items-center gap-2.5 group"
@@ -123,8 +125,8 @@ function App() {
               <span className="grid place-items-center w-8 h-8 rounded-xl bg-accent/15 border border-accent/30 text-accent2 font-display font-bold text-sm">
                 T
               </span>
-              <span className="font-display font-semibold tracking-tight text-[15px]">
-                Tagoor<span className="text-faint"> Jayamangala</span>
+              <span className="font-display font-semibold tracking-tight text-[14px] sm:text-[15px]">
+                Tagoor<span className="nav-full-name text-faint"> Jayamangala</span>
               </span>
             </button>
 
@@ -154,9 +156,9 @@ function App() {
                 href={RESUME_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ml-1.5 inline-flex items-center gap-1.5 text-[13.5px] font-medium px-4 py-2 rounded-lg bg-ink text-base hover:opacity-90 transition-opacity"
+                className="ml-1.5 inline-flex items-center gap-2 text-[13.5px] font-semibold px-4 py-2.5 rounded-xl bg-accent text-white shadow-glow hover:bg-accent2 transition-colors"
               >
-                Résumé
+                View Resume
                 <ArrowUpRight className="w-3.5 h-3.5" />
               </a>
             </div>
@@ -194,9 +196,9 @@ function App() {
                 href={RESUME_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-1 flex items-center justify-center gap-1.5 text-sm font-medium px-4 py-3 rounded-lg bg-ink text-base"
+                className="mt-1 flex items-center justify-center gap-2 text-sm font-semibold px-4 py-3 rounded-xl bg-accent text-white shadow-glow"
               >
-                Résumé <ArrowUpRight className="w-4 h-4" />
+                View Resume <ArrowUpRight className="w-4 h-4" />
               </a>
             </div>
           )}
@@ -204,83 +206,101 @@ function App() {
       </header>
 
       {/* ───────── HERO ───────── */}
-      <section className="relative z-10 pt-36 sm:pt-44 pb-20 sm:pb-28">
+      <section className="relative z-10 pt-28 sm:pt-40 pb-12 sm:pb-20">
         <div className="max-w-6xl mx-auto px-5 sm:px-8">
-          <div className="reveal max-w-3xl">
-            <div className="inline-flex items-center gap-2 text-[13px] text-sub glass rounded-full px-3.5 py-1.5 mb-8">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent2 opacity-60" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-accent2" />
-              </span>
-              Open to AI &amp; Data Engineering opportunities
-            </div>
+          <div className="reveal grid lg:grid-cols-[1.45fr_0.75fr] gap-12 lg:gap-16 items-center">
+            <div>
+              <div className="hero-top flex flex-wrap items-center justify-between gap-4 mb-7">
+                <div className="inline-flex items-center gap-2 text-[13px] text-sub glass rounded-full px-3.5 py-1.5">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent2 opacity-60" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-accent2" />
+                  </span>
+                  Open to new opportunities
+                </div>
+                <div className="hero-socials flex items-center gap-2" aria-label="Social links">
+                  <span className="social-intro text-[13px] font-semibold text-accent mr-1">Find me online:</span>
+                  {SOCIALS.map(({ icon: Icon, href, label }) => (
+                    <a key={label} href={href} aria-label={label} title={label} target="_blank" rel="noopener noreferrer"
+                      className="social-link inline-flex items-center justify-center gap-2 h-10 px-3 rounded-xl text-ink text-[13px] font-semibold">
+                      <Icon className="w-4 h-4" />
+                      <span>{label}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
 
-            <h1 className="font-display font-extrabold tracking-tight leading-[1.04] text-[clamp(2.6rem,7vw,5rem)]">
-              I build <span className="text-gradient">AI products</span> and{' '}
-              <span className="text-gradient">data systems</span>
-              <br className="hidden sm:block" /> that work in production.
-            </h1>
+              <p className="font-display font-semibold text-accent2 mb-3">Hello, I'm Tagoor.</p>
+              <h1 className="hero-title font-display font-extrabold tracking-tight leading-[1.08] text-[clamp(2.35rem,5.2vw,4.5rem)] max-w-3xl">
+                AI &amp; Data Engineer building{' '}
+                <span className="text-gradient">production-ready systems.</span>
+              </h1>
 
-            <p className="mt-7 text-lg sm:text-xl text-sub leading-relaxed max-w-2xl">
-              I'm <span className="text-ink font-medium">Tagoor Jayamangala</span> — an AI &amp; Data
-              Engineer at <span className="text-ink font-medium">Welspun Transformation Services</span>.
-              I've shipped four live systems — two LLM-powered agents and two data pipelines —
-              used daily across the organization.
-            </p>
+              <p className="mt-6 text-lg text-sub leading-relaxed max-w-2xl">
+                I design AI assistants and data pipelines that solve real business problems —
+                from multilingual agents to enterprise analytics.
+              </p>
 
-            <div className="mt-9 flex flex-wrap items-center gap-3">
-              <button
-                onClick={() => scrollTo('work')}
-                className="group inline-flex items-center gap-2 bg-accent text-white font-medium px-6 py-3.5 rounded-xl shadow-glow hover:bg-accent2 transition-colors"
-              >
-                Explore my work
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-              </button>
-              <button
-                onClick={() => scrollTo('contact')}
-                className="inline-flex items-center gap-2 glass glass-hover px-6 py-3.5 rounded-xl font-medium"
-              >
-                Get in touch
-              </button>
-              <div className="flex items-center gap-1.5 sm:ml-2">
-                {SOCIALS.map(({ icon: Icon, href, label }) => (
-                  <a
-                    key={label}
-                    href={href}
-                    aria-label={label}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="grid place-items-center w-11 h-11 rounded-xl glass glass-hover text-sub hover:text-ink"
-                  >
-                    <Icon className="w-[18px] h-[18px]" />
-                  </a>
-                ))}
+              <div className="hero-actions mt-8 flex flex-wrap items-center gap-3">
+                <button
+                  onClick={() => scrollTo('work')}
+                  className="group inline-flex items-center gap-2 bg-accent text-white font-medium px-6 py-3.5 rounded-xl shadow-glow hover:bg-accent2 transition-colors"
+                >
+                  View projects
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </button>
+                <button
+                  onClick={() => scrollTo('contact')}
+                  className="inline-flex items-center gap-2 glass glass-hover px-6 py-3.5 rounded-xl font-medium"
+                >
+                  Contact me
+                </button>
               </div>
             </div>
 
-            {/* stat strip */}
-            <div className="mt-14 grid grid-cols-2 sm:grid-cols-4 gap-px rounded-2xl overflow-hidden glass">
-              {[
-                { n: '4', l: 'Production systems' },
-                { n: '2', l: 'LLM agents' },
-                { n: '2', l: 'Data pipelines' },
-                { n: '20+', l: 'Connected tools' },
-              ].map((s) => (
-                <div key={s.l} className="bg-line/[0.015] px-5 py-5">
-                  <div className="font-display font-bold text-3xl accent-gradient">{s.n}</div>
-                  <div className="text-[12.5px] text-faint mt-1 leading-tight">{s.l}</div>
+            <aside className="hero-card glass rounded-3xl p-5 sm:p-7" aria-label="Professional summary">
+              <div className="flex items-center justify-between gap-3 pb-5 border-b border-line/[0.08]">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.16em] text-faint">Currently</p>
+                  <p className="font-display font-semibold mt-1.5">AI &amp; Data Engineer</p>
                 </div>
-              ))}
-            </div>
+                <span className="w-11 h-11 rounded-2xl grid place-items-center bg-accent/10 border border-accent/20 text-accent2 font-display font-bold">TJ</span>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3 py-6 border-b border-line/[0.08]">
+                {[
+                  { n: '5', l: 'Projects' },
+                  { n: '2', l: 'AI agents' },
+                  { n: '30+', l: 'Tools' },
+                ].map((s) => (
+                  <div key={s.l}>
+                    <div className="font-display font-bold text-2xl accent-gradient">{s.n}</div>
+                    <div className="text-xs text-faint mt-1">{s.l}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="pt-5">
+                <p className="text-xs uppercase tracking-[0.16em] text-faint mb-3">Core focus</p>
+                <div className="flex flex-wrap gap-2">
+                  {['Agentic AI', 'RAG', 'Data pipelines', 'Python', 'FastAPI'].map((item) => (
+                    <span key={item} className="text-xs px-3 py-1.5 rounded-full bg-line/[0.035] border border-line/[0.08] text-sub">{item}</span>
+                  ))}
+                </div>
+                <div className="mt-5 flex items-center gap-2 text-sm text-sub">
+                  <MapPin className="w-4 h-4 text-accent2" /> Hyderabad, India
+                </div>
+              </div>
+            </aside>
           </div>
         </div>
       </section>
 
       {/* ───────── ABOUT ───────── */}
-      <Section id="about" label="01" title="About">
-        <div className="reveal grid md:grid-cols-[0.85fr_1.6fr] gap-10 lg:gap-14 items-start">
+      <Section id="about" label="About me" title="Building useful systems, not just prototypes">
+        <div className="reveal grid md:grid-cols-[0.72fr_1.6fr] gap-9 lg:gap-12 items-start">
           <div className="md:sticky md:top-28">
-            <div className="relative group">
+            <div className="relative group max-w-[280px] md:max-w-none mx-auto">
               <div className="absolute -inset-3 rounded-3xl bg-accent/20 blur-2xl opacity-40 group-hover:opacity-70 transition-opacity" />
               <div className="relative glass rounded-3xl p-2">
                 <img
@@ -290,40 +310,35 @@ function App() {
                 />
               </div>
             </div>
-            <div className="mt-5 flex items-center gap-2 text-sm text-faint">
+            <div className="mt-5 flex items-center justify-center md:justify-start gap-2 text-sm text-faint">
               <MapPin className="w-4 h-4 text-accent2" />
               Hyderabad, India · open to remote
             </div>
           </div>
 
           <div>
-            <div className="space-y-5 text-lg leading-relaxed text-sub">
+            <div className="space-y-5 text-[17px] leading-relaxed text-sub max-w-2xl">
               <p className="text-ink">
-                I'm an AI &amp; Data Engineer who cares about systems that actually run — not
-                prototypes. In my first professional role at{' '}
+                I turn AI and data ideas into dependable products. At{' '}
                 <span className="accent-gradient font-medium">Welspun Transformation Services</span>,
-                I've taken four systems from blank repo to production.
+                I take projects from initial design through deployment and support.
               </p>
               <p>
-                On the AI side I built <strong className="text-ink font-medium">Sintex</strong>, a
-                multilingual WhatsApp agent for a plumber loyalty program with RAG over pipe &amp;
-                tank product docs, and <strong className="text-ink font-medium">ChittiGPT</strong>,
-                an enterprise HR copilot wiring 20+ company services into one agentic chat.
+                My work includes multilingual WhatsApp assistants, enterprise HR copilots,
+                multi-source ETL pipelines, and real-time analytics systems.
               </p>
               <p>
-                On the data side I designed a two-layer KPI pipeline over 6 PostgreSQL databases and
-                MongoDB, and a real-time funnel tracker that fuses three live sources every 60 seconds.
-                I hold a Diploma in Data Analytics from SUNY Potsdam (Appuji Scholarship, 86%) and a
-                Gold Certificate in Python from NASSCOM.
+                I focus on practical outcomes: accurate data, safe automation, simple user
+                experiences, and systems teams can maintain after launch.
               </p>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-10">
+            <div className="grid grid-cols-2 gap-3 mt-8 max-w-2xl">
               {[
                 { k: 'Role', v: 'AI & Data Eng.' },
                 { k: 'Company', v: 'Welspun (WTSL)' },
-                { k: 'Languages', v: 'EN · TE · HI' },
-                { k: 'Status', v: 'Open to roles' },
+                { k: 'Location', v: 'Hyderabad, India' },
+                { k: 'Status', v: 'Open to opportunities' },
               ].map((x) => (
                 <div key={x.k} className="glass rounded-2xl p-4">
                   <div className="text-[11px] uppercase tracking-wider text-faint">{x.k}</div>
@@ -336,33 +351,44 @@ function App() {
       </Section>
 
       {/* ───────── SKILLS ───────── */}
-      <Section id="skills" title="What I work with" label="02">
-        <div className="stagger grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {skills.map((skill) => (
-            <div
-              key={skill.category}
-              className="group glass glass-hover rounded-3xl p-6 flex flex-col"
-            >
-              <span className="grid place-items-center w-12 h-12 rounded-2xl bg-accent/10 border border-accent/20 text-2xl mb-5">
-                {skill.icon}
-              </span>
-              <h3 className="font-display font-semibold text-lg leading-tight mb-2.5">
-                {skill.category}
-              </h3>
-              <p className="text-[14px] text-sub leading-relaxed mb-5">{skill.description}</p>
-              <p className="mt-auto pt-4 border-t border-line/[0.08] text-[13px] text-faint leading-relaxed">
-                {skill.items.slice(0, 6).join('  ·  ')}
-                {skill.items.length > 6 && (
-                  <span className="text-accent2"> +{skill.items.length - 6} more</span>
-                )}
-              </p>
-            </div>
-          ))}
+      <Section id="skills" title="Skills I use to deliver" label="Technical toolkit">
+        <div className="stagger grid lg:grid-cols-2 gap-4">
+          {skills.map((skill, index) => {
+            const Icon = SKILL_ICONS[index];
+            const visibleItems = skill.items.slice(0, 5);
+
+            return (
+              <article
+                key={skill.category}
+                className={`skill-card group glass glass-hover rounded-2xl p-5 sm:p-6 ${index < 2 ? 'skill-card-featured' : ''}`}
+              >
+                <div className="flex gap-4 sm:gap-5 items-start">
+                  <span className="skill-icon grid place-items-center w-11 h-11 rounded-xl shrink-0">
+                    <Icon className="w-5 h-5 text-accent2" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-3">
+                      <h3 className="font-display font-semibold text-lg leading-tight">{skill.category}</h3>
+                      <span className="font-display text-xs text-faint shrink-0">0{index + 1}</span>
+                    </div>
+                    <p className="text-[14px] text-sub leading-relaxed mt-2">{skill.description}</p>
+                  </div>
+                </div>
+
+                <div className="mt-5 pt-4 border-t border-line/[0.08] flex flex-wrap gap-2">
+                  {visibleItems.map((item) => (
+                    <span key={item} className="skill-chip">{item}</span>
+                  ))}
+                </div>
+
+              </article>
+            );
+          })}
         </div>
       </Section>
 
       {/* ───────── WORK ───────── */}
-      <Section id="work" title="Selected work" label="03">
+      <Section id="work" title="Projects with real-world impact" label="Featured work">
         <div className="reveal flex flex-wrap items-center gap-2 mb-9">
           <span className="text-sm text-faint mr-1">Filter</span>
           {([
@@ -384,39 +410,41 @@ function App() {
           ))}
         </div>
 
-        <div className="grid gap-5">
+        <div className="grid md:grid-cols-2 gap-5">
           {filtered.map((project) => (
             <button
               key={project.id}
               onClick={() => setSelectedProject(project)}
-              className="group relative w-full text-left glass glass-hover rounded-3xl p-5 sm:p-6 overflow-hidden hover:-translate-y-0.5 animate-fade-up"
+              className="project-card group relative w-full text-left glass glass-hover rounded-3xl overflow-hidden hover:-translate-y-1 animate-fade-up"
             >
-              <div className="grid sm:grid-cols-[auto_1fr_auto] gap-5 sm:gap-7 items-center">
-                <div className="relative w-full sm:w-32 h-40 sm:h-32 rounded-2xl overflow-hidden border border-line/10 shrink-0">
+              <div className="relative aspect-[16/9] overflow-hidden border-b border-line/10">
                   <img
                     src={project.coverImage}
                     alt={project.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    loading="lazy"
+                    decoding="async"
+                    className="project-cover-image w-full h-full object-cover group-hover:scale-[1.035] transition-transform duration-700"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-base/60 to-transparent" />
-                </div>
-
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2.5 text-[12px] text-faint mb-2">
-                    <span className="accent-gradient font-medium uppercase tracking-wide">
-                      {project.category}
-                    </span>
-                    <span className="w-1 h-1 rounded-full bg-faint" />
-                    <span>{project.year}</span>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/[0.04] pointer-events-none" />
+                  <div className="absolute left-4 top-4 flex items-center gap-2">
+                    <span className="project-category-badge">{project.category}</span>
+                    <span className="project-category-badge">{project.year}</span>
                   </div>
-                  <h3 className="font-display font-semibold text-xl sm:text-2xl leading-tight mb-2 group-hover:text-accent2 transition-colors">
+                  <div className="absolute right-4 bottom-4 rounded-xl bg-black/80 backdrop-blur-md border border-white/20 px-3.5 py-2.5 text-right shadow-lg">
+                    <div className="font-display font-bold text-xl text-white leading-none">{project.metric}</div>
+                    <div className="text-[10px] text-white/80 mt-1 max-w-[130px] leading-tight">{project.metricLabel}</div>
+                  </div>
+              </div>
+
+              <div className="p-5 sm:p-6">
+                  <h3 className="font-display font-semibold text-xl sm:text-[1.35rem] leading-tight mb-2 group-hover:text-accent2 transition-colors">
                     {project.shortName || project.title}
                   </h3>
-                  <p className="text-[15px] text-sub leading-relaxed line-clamp-2 mb-3.5">
+                  <p className="text-[14px] text-sub leading-relaxed mb-4">
                     {project.summary}
                   </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {project.tools.slice(0, 6).map((t) => (
+                  <div className="flex flex-wrap gap-1.5 pr-12">
+                    {project.tools.slice(0, 4).map((t) => (
                       <span
                         key={t}
                         className="text-[11px] px-2 py-0.5 rounded-md bg-line/[0.03] border border-line/[0.07] text-sub"
@@ -424,27 +452,15 @@ function App() {
                         {t}
                       </span>
                     ))}
-                    {project.tools.length > 6 && (
+                    {project.tools.length > 4 && (
                       <span className="text-[11px] px-2 py-0.5 text-faint">
-                        +{project.tools.length - 6}
+                        +{project.tools.length - 4} more
                       </span>
                     )}
                   </div>
-                </div>
-
-                <div className="flex sm:flex-col items-center sm:items-end justify-between gap-3 sm:text-right shrink-0 sm:min-w-[120px]">
-                  <div>
-                    <div className="font-display font-bold text-2xl accent-gradient leading-none">
-                      {project.metric}
-                    </div>
-                    <div className="text-[11px] text-faint mt-1.5 max-w-[130px] sm:ml-auto leading-tight">
-                      {project.metricLabel}
-                    </div>
-                  </div>
-                  <span className="grid place-items-center w-10 h-10 rounded-full border border-line/10 text-sub group-hover:bg-accent group-hover:text-white group-hover:border-accent transition-colors">
+                  <span className="absolute right-5 bottom-5 grid place-items-center w-10 h-10 rounded-full border border-line/10 text-sub group-hover:bg-accent group-hover:text-white group-hover:border-accent transition-colors">
                     <ArrowUpRight className="w-5 h-5" />
                   </span>
-                </div>
               </div>
             </button>
           ))}
@@ -452,12 +468,13 @@ function App() {
       </Section>
 
       {/* ───────── EDUCATION ───────── */}
-      <Section id="education" title="Education & credentials" label="04">
+      <Section id="education" title="Learning that shaped my foundation" label="Education & credentials">
         <div className="stagger grid sm:grid-cols-2 gap-4">
           {[
             { t: 'Gold Certificate — Python', s: 'NASSCOM & 360DigiTMG', y: 'Gold', tag: 'Credential' },
             { t: 'B.Tech — Electrical & Electronics', s: 'S.R.K.R Engineering College', y: '7.93', tag: '2020–2024' },
             { t: 'Intermediate (MPC)', s: 'Sri Chaitanya Junior College', y: '9.75', tag: '2018–2020' },
+            { t: 'Secondary School Certificate (SSC)', s: 'Bhashyam E.M. High School · BSE Andhra Pradesh', y: '9.8', tag: '2017–2018' },
           ].map((e) => (
             <div
               key={e.t}
@@ -475,13 +492,13 @@ function App() {
       </Section>
 
       {/* ───────── CONTACT ───────── */}
-      <Section id="contact" title="Let's build something" label="05">
-        <div className="reveal relative glass rounded-[2rem] p-8 sm:p-12 overflow-hidden">
+      <Section id="contact" title="Have a role or project in mind?" label="Let's work together">
+        <div className="reveal relative glass rounded-3xl p-5 sm:p-12 overflow-hidden">
           <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-accent/20 blur-3xl pointer-events-none" />
           <div className="relative grid lg:grid-cols-[1.3fr_1fr] gap-10 items-center">
             <div>
               <Sparkles className="w-7 h-7 text-accent2 mb-5" />
-              <p className="text-2xl sm:text-3xl font-display font-semibold leading-snug tracking-tight">
+              <p className="text-xl sm:text-3xl font-display font-semibold leading-snug tracking-tight">
                 I'm looking for <span className="accent-gradient">AI / GenAI Engineer</span> and{' '}
                 <span className="accent-gradient">Data Engineer</span> roles — remote, hybrid, or
                 on-site across India.
@@ -490,7 +507,7 @@ function App() {
                 If you're building intelligent systems where data pipelines and LLM applications work
                 together, let's talk.
               </p>
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className="contact-actions mt-8 flex flex-wrap gap-3">
                 <a
                   href="mailto:jayamangalatagore@gmail.com"
                   className="inline-flex items-center gap-2 bg-accent text-white font-medium px-6 py-3.5 rounded-xl shadow-glow hover:bg-accent2 transition-colors"
@@ -514,7 +531,7 @@ function App() {
                 { icon: Phone, label: '+91 91826 19119', href: 'tel:+919182619119' },
                 { icon: Linkedin, label: 'LinkedIn', href: 'https://www.linkedin.com/in/tagoor-jayamangala-b19a30283/' },
                 { icon: Github, label: 'GitHub', href: 'https://github.com/TagoorJ' },
-                { icon: FileText, label: 'Résumé', href: RESUME_URL },
+                { icon: FileText, label: 'View Resume', href: RESUME_URL },
               ].map(({ icon: Icon, label, href }) => (
                 <a
                   key={label}
@@ -571,15 +588,26 @@ function Section({
   title: string;
   children: React.ReactNode;
 }) {
+  const subtitles: Record<string, string> = {
+    about: 'A quick look at my experience, approach, and the kind of problems I enjoy solving.',
+    skills: 'The focused set of technologies I use across AI, backend, data, and deployment.',
+    work: 'Selected production projects, the problems behind them, and the results they delivered.',
+    education: 'Academic background and credentials supporting my engineering practice.',
+    contact: 'I am open to AI Engineering and Data Engineering opportunities.',
+  };
+
   return (
-    <section id={id} className="relative z-10 py-20 sm:py-28 scroll-mt-20">
+    <section id={id} className="relative z-10 py-14 sm:py-20 scroll-mt-20">
       <div className="max-w-6xl mx-auto px-5 sm:px-8">
-        <div className="reveal flex items-end gap-4 mb-12">
-          <span className="font-display text-sm font-semibold accent-gradient">{label}</span>
-          <h2 className="font-display font-bold text-3xl sm:text-[2.6rem] tracking-tight leading-none">
+        <div className="section-heading reveal max-w-3xl mb-9 sm:mb-11">
+          <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-accent2 mb-3">
+            <span className="w-7 h-px bg-accent2/70" />
+            {label}
+          </div>
+          <h2 className="font-display font-bold text-3xl sm:text-[2.5rem] tracking-tight leading-[1.12]">
             {title}
           </h2>
-          <span className="flex-1 h-px bg-line/[0.08] mb-2" />
+          <p className="mt-3 text-sub leading-relaxed max-w-2xl">{subtitles[id]}</p>
         </div>
         {children}
       </div>

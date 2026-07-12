@@ -7,14 +7,14 @@
 :root {
   scroll-behavior: smooth;
   /* ── dark theme (default) ── */
-  --c-base: 8 8 11;
-  --c-raised: 14 14 19;
+  --c-base: 10 10 14;
+  --c-raised: 18 18 24;
   --c-ink: 250 250 250;
   --c-sub: 161 161 170;
   --c-faint: 113 113 122;
   --c-line: 255 255 255;   /* white lines/fills at low opacity */
-  --aura-1: rgba(99,102,241,0.20);
-  --aura-2: rgba(129,140,248,0.10);
+  --aura-1: rgba(99,102,241,0.12);
+  --aura-2: rgba(129,140,248,0.06);
   color-scheme: dark;
 }
 
@@ -82,9 +82,9 @@ body {
 
 /* ── glass surfaces (theme-aware via --c-line) ── */
 .glass {
-  background: rgb(var(--c-raised) / 0.72);
+  background: rgb(var(--c-raised) / 0.82);
   border: 1px solid rgb(var(--c-line) / 0.10);
-  backdrop-filter: blur(18px);
+  backdrop-filter: blur(10px);
   box-shadow: 0 1px 0 rgb(var(--c-line) / 0.04) inset;
 }
 .glass-hover {
@@ -93,6 +93,90 @@ body {
 .glass-hover:hover {
   background: rgb(var(--c-raised) / 0.94);
   border-color: rgba(129, 140, 248, 0.40);
+}
+
+.hero-card {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 24px 70px -42px rgba(99, 102, 241, 0.65);
+}
+.hero-card::before {
+  content: '';
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  right: -90px;
+  top: -100px;
+  border-radius: 999px;
+  background: rgba(99, 102, 241, 0.14);
+  filter: blur(35px);
+  pointer-events: none;
+}
+
+.social-link {
+  background: rgba(99, 102, 241, 0.09);
+  border: 1px solid rgba(99, 102, 241, 0.28);
+  box-shadow: 0 6px 20px -14px rgba(99, 102, 241, 0.8);
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.social-link:hover {
+  background: rgba(99, 102, 241, 0.18);
+  border-color: rgba(99, 102, 241, 0.55);
+  transform: translateY(-1px);
+}
+
+.skill-chip {
+  border: 1px solid rgb(var(--c-line) / 0.09);
+  background: rgb(var(--c-line) / 0.035);
+  color: rgb(var(--c-sub));
+}
+.skill-card {
+  position: relative;
+  overflow: hidden;
+}
+.skill-card::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 1.25rem;
+  bottom: 1.25rem;
+  width: 2px;
+  border-radius: 99px;
+  background: transparent;
+}
+.skill-card-featured::after { background: linear-gradient(#818cf8, #4f46e5); }
+.skill-icon {
+  background: linear-gradient(145deg, rgba(99, 102, 241, 0.16), rgba(99, 102, 241, 0.05));
+  border: 1px solid rgba(99, 102, 241, 0.22);
+}
+.skill-chip {
+  border-radius: 0.5rem;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.7rem;
+  line-height: 1.2;
+}
+.skill-chip-more {
+  color: #818cf8;
+  border-color: rgba(99, 102, 241, 0.2);
+}
+
+.project-category-badge {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(8, 8, 14, 0.72);
+  backdrop-filter: blur(10px);
+  color: rgba(255, 255, 255, 0.88);
+  border-radius: 999px;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.project-cover-image {
+  filter: saturate(1.08) contrast(1.04);
+}
+.project-card:hover .project-cover-image {
+  filter: saturate(1.13) contrast(1.06);
 }
 
 /* ── accent gradient text (starts from primary ink so it reads in both themes) ── */
@@ -122,7 +206,7 @@ body {
   content: '';
   position: absolute;
   border-radius: 9999px;
-  filter: blur(130px);
+  filter: blur(150px);
 }
 .aura::before {
   width: 620px; height: 620px;
@@ -153,6 +237,69 @@ body {
 @media (max-width: 640px) {
   .aura::before { width: 360px; height: 360px; right: -160px; }
   .aura::after { width: 320px; height: 320px; left: -180px; }
+
+  .hero-title {
+    font-size: clamp(2.25rem, 11vw, 3rem);
+    overflow-wrap: anywhere;
+  }
+
+  .hero-actions > button {
+    width: calc(50% - 0.375rem);
+    justify-content: center;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    white-space: nowrap;
+  }
+
+  .hero-socials {
+    width: 100%;
+    flex-wrap: wrap;
+    margin-bottom: 0;
+  }
+
+  .social-intro { width: 100%; }
+
+  .hero-top {
+    align-items: flex-start;
+  }
+
+  .hero-card { border-radius: 1.25rem; }
+
+  .project-card p,
+  .project-card h3,
+  [role='dialog'] p,
+  [role='dialog'] li {
+    overflow-wrap: anywhere;
+  }
+
+  .project-metric {
+    border-top: 1px solid rgb(var(--c-line) / 0.08);
+    padding-top: 1rem;
+  }
+
+  .contact-actions > a,
+  .contact-actions > button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .section-heading h2 {
+    font-size: 1.75rem;
+    line-height: 1.15;
+  }
+
+  .section-heading > span:last-child { display: none; }
+
+  .skill-card { min-height: 0; }
+}
+
+@media (max-width: 390px) {
+  .nav-full-name { display: none; }
+  .hero-socials > a {
+    flex: 1 1 auto;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+  }
 }
 
 *:focus-visible { outline: 2px solid #818CF8; outline-offset: 2px; border-radius: 4px; }
