@@ -33,7 +33,7 @@ function useReveal() {
           }
         });
       },
-      { threshold: 0.12 }
+      { threshold: 0.08, rootMargin: '0px 0px -8% 0px' }
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
@@ -46,14 +46,30 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [activeFilter, setActiveFilter] = useState<'all' | 'genai' | 'data'>('all');
-  const [isLight, setIsLight] = useState(() => {
-    if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-      return localStorage.getItem('theme') === 'light';
-    }
-    return false; // default: dark
-  });
+  const [isLight, setIsLight] = useState(false);
 
   useReveal();
+
+  useEffect(() => {
+    const root = document.documentElement;
+    let frame = 0;
+
+    const updateScroll = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        root.style.setProperty('--scroll-progress', `${max > 0 ? window.scrollY / max : 0}`);
+        frame = 0;
+      });
+    };
+
+    window.addEventListener('scroll', updateScroll, { passive: true });
+    updateScroll();
+    return () => {
+      window.removeEventListener('scroll', updateScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, []);
 
   useEffect(() => {
     document.documentElement.classList.toggle('light', isLight);
@@ -95,10 +111,38 @@ function App() {
     return activeFilter === 'genai' ? isGenAI : !isGenAI;
   });
 
+  const changeFilter = (filter: 'all' | 'genai' | 'data') => {
+    const update = () => setActiveFilter(filter);
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && document.startViewTransition) {
+      document.startViewTransition(update);
+    } else {
+      update();
+    }
+  };
+
   return (
     <div className="relative min-h-screen bg-base text-ink font-body antialiased overflow-x-hidden">
       <a href="#about" className="skip-link">Skip to content</a>
       <div className="aura" aria-hidden />
+      <div className="dynamic-backdrop" aria-hidden>
+        <span className="mesh-blob mesh-blob-one" />
+        <span className="mesh-blob mesh-blob-two" />
+        <span className="mesh-blob mesh-blob-three" />
+        <span className="light-ribbon ribbon-one" />
+        <span className="light-ribbon ribbon-two" />
+        <span className="contour-field" />
+        <span className="perspective-grid" />
+        <span className="energy-wave" />
+        <span className="code-watermark watermark-one">{'{ DATA }'}</span>
+        <span className="code-watermark watermark-two">PIPELINES // 01</span>
+        <div className="pipeline-map">
+          <span><Database />SOURCE</span><i />
+          <span><Code2 />TRANSFORM</span><i />
+          <span><Server />WAREHOUSE</span><i />
+          <span><BarChart3 />INSIGHTS</span>
+        </div>
+      </div>
+      <div className="scroll-progress" aria-hidden />
 
       <Toaster
         position="bottom-right"
@@ -117,10 +161,10 @@ function App() {
       {/* ───────── NAV ───────── */}
       <header className="fixed top-0 inset-x-0 z-40">
         <div className="max-w-6xl mx-auto px-3 sm:px-6 pt-3 sm:pt-4">
-          <nav className="glass rounded-2xl h-14 sm:h-16 flex items-center justify-between px-3 sm:px-5">
+          <nav className="nav-shell glass rounded-2xl h-14 sm:h-16 flex items-center justify-between px-3 sm:px-5">
             <button
               onClick={() => scrollTo('about')}
-              className="flex items-center gap-2.5 group"
+              className="brand-mark flex items-center gap-2.5 group"
             >
               <span className="grid place-items-center w-8 h-8 rounded-xl bg-accent/15 border border-accent/30 text-accent2 font-display font-bold text-sm">
                 T
@@ -182,7 +226,7 @@ function App() {
           </nav>
 
           {isMenuOpen && (
-            <div className="md:hidden glass rounded-2xl mt-2 p-2">
+            <div className="mobile-menu md:hidden glass rounded-2xl mt-2 p-2">
               {NAV.map((s) => (
                 <button
                   key={s}
@@ -206,7 +250,7 @@ function App() {
       </header>
 
       {/* ───────── HERO ───────── */}
-      <section className="relative z-10 pt-28 sm:pt-40 pb-12 sm:pb-20">
+      <section className="hero-section relative z-10 pt-28 sm:pt-40 pb-12 sm:pb-20">
         <div className="max-w-6xl mx-auto px-5 sm:px-8">
           <div className="reveal grid lg:grid-cols-[1.45fr_0.75fr] gap-12 lg:gap-16 items-center">
             <div>
@@ -230,15 +274,15 @@ function App() {
                 </div>
               </div>
 
-              <p className="font-display font-semibold text-accent2 mb-3">Hello, I'm Tagoor.</p>
+              <p className="hero-eyebrow font-display font-semibold text-accent2 mb-3">Hello, I'm Tagoor.</p>
               <h1 className="hero-title font-display font-extrabold tracking-tight leading-[1.08] text-[clamp(2.35rem,5.2vw,4.5rem)] max-w-3xl">
-                AI &amp; Data Engineer building{' '}
-                <span className="text-gradient">production-ready systems.</span>
+                Data Engineer building{' '}
+                <span className="text-gradient">intelligent, production-ready systems.</span>
               </h1>
 
               <p className="mt-6 text-lg text-sub leading-relaxed max-w-2xl">
-                I design AI assistants and data pipelines that solve real business problems —
-                from multilingual agents to enterprise analytics.
+                I build reliable data pipelines, analytics platforms, and AI-powered systems that
+                turn complex enterprise data into useful products.
               </p>
 
               <div className="hero-actions mt-8 flex flex-wrap items-center gap-3">
@@ -258,43 +302,45 @@ function App() {
               </div>
             </div>
 
-            <aside className="hero-card glass rounded-3xl p-5 sm:p-7" aria-label="Professional summary">
-              <div className="flex items-center justify-between gap-3 pb-5 border-b border-line/[0.08]">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.16em] text-faint">Currently</p>
-                  <p className="font-display font-semibold mt-1.5">AI &amp; Data Engineer</p>
-                </div>
-                <span className="w-11 h-11 rounded-2xl grid place-items-center bg-accent/10 border border-accent/20 text-accent2 font-display font-bold">TJ</span>
+            <aside className="tech-sticker" aria-label="Animated data pipeline systems visualization">
+              <div className="sticker-glow" aria-hidden />
+              <div className="sticker-status"><i /> PIPELINE HEALTHY</div>
+              <div className="sticker-orbit sticker-orbit-outer">
+                <span className="orbit-chip chip-ai">ETL</span>
+                <span className="orbit-chip chip-data">SQL</span>
+                <span className="orbit-chip chip-api">AI</span>
               </div>
-
-              <div className="grid grid-cols-3 gap-3 py-6 border-b border-line/[0.08]">
-                {[
-                  { n: '5', l: 'Projects' },
-                  { n: '2', l: 'AI agents' },
-                  { n: '30+', l: 'Tools' },
-                ].map((s) => (
-                  <div key={s.l}>
-                    <div className="font-display font-bold text-2xl accent-gradient">{s.n}</div>
-                    <div className="text-xs text-faint mt-1">{s.l}</div>
-                  </div>
-                ))}
+              <div className="sticker-orbit sticker-orbit-mid">
+                <span className="orbit-particle particle-one" />
+                <span className="orbit-particle particle-two" />
               </div>
-
-              <div className="pt-5">
-                <p className="text-xs uppercase tracking-[0.16em] text-faint mb-3">Core focus</p>
-                <div className="flex flex-wrap gap-2">
-                  {['Agentic AI', 'RAG', 'Data pipelines', 'Python', 'FastAPI'].map((item) => (
-                    <span key={item} className="text-xs px-3 py-1.5 rounded-full bg-line/[0.035] border border-line/[0.08] text-sub">{item}</span>
-                  ))}
-                </div>
-                <div className="mt-5 flex items-center gap-2 text-sm text-sub">
-                  <MapPin className="w-4 h-4 text-accent2" /> Hyderabad, India
-                </div>
+              <div className="sticker-core">
+                <span className="core-scan" />
+                <span className="core-rings" />
+                <Database className="core-icon" strokeWidth={1.35} />
+                <span className="core-label">DATA CORE</span>
+                <span className="core-version">ETL // STREAMING</span>
+              </div>
+              <div className="sticker-readout readout-right"><b>30+</b><span>DATA TOOLS</span></div>
+              <div className="sticker-code" aria-hidden>
+                <span>SQL</span><span>ETL</span><span>01</span><span>DB</span><span>AI</span>
               </div>
             </aside>
           </div>
         </div>
       </section>
+
+      <div className="telemetry-shell relative z-10" aria-label="Technical capabilities">
+        <div className="telemetry-track">
+          {[0, 1].map((copy) => (
+            <div className="telemetry-group" key={copy} aria-hidden={copy === 1}>
+              {['LLM SYSTEMS', 'RAG PIPELINES', 'AGENTIC AI', 'REAL-TIME DATA', 'FASTAPI', 'CLOUD DEPLOYMENT'].map((item, index) => (
+                <span key={item}><i className={index % 2 ? 'signal-dot cyan' : 'signal-dot'} />{item}<b>0{index + 1}</b></span>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* ───────── ABOUT ───────── */}
       <Section id="about" label="About me" title="Building useful systems, not just prototypes">
@@ -340,7 +386,7 @@ function App() {
                 { k: 'Location', v: 'Hyderabad, India' },
                 { k: 'Status', v: 'Open to opportunities' },
               ].map((x) => (
-                <div key={x.k} className="glass rounded-2xl p-4">
+                <div key={x.k} className="stat-card glass rounded-2xl p-4">
                   <div className="text-[11px] uppercase tracking-wider text-faint">{x.k}</div>
                   <div className="font-medium text-sm mt-1.5 text-ink">{x.v}</div>
                 </div>
@@ -360,7 +406,7 @@ function App() {
             return (
               <article
                 key={skill.category}
-                className={`skill-card group glass glass-hover rounded-2xl p-5 sm:p-6 ${index < 2 ? 'skill-card-featured' : ''}`}
+                className={`skill-card interactive-card group glass glass-hover rounded-2xl p-5 sm:p-6 ${index < 2 ? 'skill-card-featured' : ''}`}
               >
                 <div className="flex gap-4 sm:gap-5 items-start">
                   <span className="skill-icon grid place-items-center w-11 h-11 rounded-xl shrink-0">
@@ -398,7 +444,7 @@ function App() {
           ] as const).map(([key, label]) => (
             <button
               key={key}
-              onClick={() => setActiveFilter(key)}
+              onClick={() => changeFilter(key)}
               className={`px-4 py-1.5 rounded-full text-[13px] font-medium transition-colors ${
                 activeFilter === key
                   ? 'bg-accent text-white'
@@ -410,12 +456,12 @@ function App() {
           ))}
         </div>
 
-        <div className="grid md:grid-cols-2 gap-5">
+        <div key={activeFilter} className="project-grid grid md:grid-cols-2 gap-5">
           {filtered.map((project) => (
             <button
               key={project.id}
               onClick={() => setSelectedProject(project)}
-              className="project-card group relative w-full text-left glass glass-hover rounded-3xl overflow-hidden hover:-translate-y-1 animate-fade-up"
+              className="project-card interactive-card group relative w-full text-left glass glass-hover rounded-3xl overflow-hidden animate-fade-up"
             >
               <div className="relative aspect-[16/9] overflow-hidden border-b border-line/10">
                   <img
@@ -426,10 +472,6 @@ function App() {
                     className="project-cover-image w-full h-full object-cover group-hover:scale-[1.035] transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/[0.04] pointer-events-none" />
-                  <div className="absolute left-4 top-4 flex items-center gap-2">
-                    <span className="project-category-badge">{project.category}</span>
-                    <span className="project-category-badge">{project.year}</span>
-                  </div>
                   <div className="absolute right-4 bottom-4 rounded-xl bg-black/80 backdrop-blur-md border border-white/20 px-3.5 py-2.5 text-right shadow-lg">
                     <div className="font-display font-bold text-xl text-white leading-none">{project.metric}</div>
                     <div className="text-[10px] text-white/80 mt-1 max-w-[130px] leading-tight">{project.metricLabel}</div>
@@ -478,7 +520,7 @@ function App() {
           ].map((e) => (
             <div
               key={e.t}
-              className="glass glass-hover rounded-3xl p-6 flex items-start justify-between gap-4"
+              className="education-card interactive-card glass glass-hover rounded-3xl p-6 flex items-start justify-between gap-4"
             >
               <div className="min-w-0">
                 <div className="text-[11px] uppercase tracking-wider accent-gradient font-medium mb-2">{e.tag}</div>
@@ -493,11 +535,11 @@ function App() {
 
       {/* ───────── CONTACT ───────── */}
       <Section id="contact" title="Have a role or project in mind?" label="Let's work together">
-        <div className="reveal relative glass rounded-3xl p-5 sm:p-12 overflow-hidden">
+        <div className="contact-panel reveal relative glass rounded-3xl p-5 sm:p-12 overflow-hidden">
           <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-accent/20 blur-3xl pointer-events-none" />
           <div className="relative grid lg:grid-cols-[1.3fr_1fr] gap-10 items-center">
             <div>
-              <Sparkles className="w-7 h-7 text-accent2 mb-5" />
+              <Sparkles className="sparkle-float w-7 h-7 text-accent2 mb-5" />
               <p className="text-xl sm:text-3xl font-display font-semibold leading-snug tracking-tight">
                 I'm looking for <span className="accent-gradient">AI / GenAI Engineer</span> and{' '}
                 <span className="accent-gradient">Data Engineer</span> roles — remote, hybrid, or
@@ -538,7 +580,7 @@ function App() {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3.5 rounded-2xl bg-line/[0.02] border border-line/[0.07] px-5 py-3.5 hover:border-accent/30 hover:bg-line/[0.04] transition-colors group"
+                  className="contact-link flex items-center gap-3.5 rounded-2xl bg-line/[0.02] border border-line/[0.07] px-5 py-3.5 hover:border-accent/30 hover:bg-line/[0.04] transition-colors group"
                 >
                   <span className="grid place-items-center w-9 h-9 rounded-xl bg-accent/10 text-accent2 shrink-0">
                     <Icon className="w-[18px] h-[18px]" />

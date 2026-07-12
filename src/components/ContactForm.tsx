@@ -29,7 +29,7 @@ export function ContactForm({ isDarkMode }: ContactFormProps) {
       
       toast.success('Message prepared! Your email client will open shortly.');
       setFormData({ name: '', email: '', message: '' });
-    } catch (error) {
+    } catch {
       toast.error('Something went wrong. Please try again.');
     } finally {
       setIsSubmitting(false);

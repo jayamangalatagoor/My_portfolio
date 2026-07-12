@@ -53,11 +53,11 @@ export function Modal({ project, onClose }: ModalProps) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-start sm:items-center justify-center z-50 p-0 sm:p-6"
+      className="modal-backdrop fixed inset-0 bg-black/75 backdrop-blur-sm flex items-start sm:items-center justify-center z-50 p-0 sm:p-6"
       onClick={onClose}
     >
       <div
-        className="relative bg-raised text-ink w-full sm:max-w-3xl sm:rounded-3xl border border-line/[0.08] shadow-soft max-h-screen sm:max-h-[90vh] overflow-y-auto"
+        className="modal-panel relative bg-raised text-ink w-full sm:max-w-3xl sm:rounded-3xl border border-line/[0.08] shadow-soft max-h-screen sm:max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
